@@ -1,34 +1,47 @@
-let userScore = 0;
-let computerScore = 0;
+let secretNumber = Math.trunc(Math.random() * 20) + 1;
+let score = 20;
+let highscore = 0;
 
-function play(userChoice) {
-  const choices = ["rock", "paper", "scissors"];
-  const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+const displayMessage = function (message) {
+  document.querySelector(".message").textContent = message;
+};
 
-  let result;
-  if (userChoice === computerChoice) {
-    result = "It's a tie!";
-  } else if (
-    (userChoice === "rock" && computerChoice === "scissors") ||
-    (userChoice === "paper" && computerChoice === "rock") ||
-    (userChoice === "scissors" && computerChoice === "paper")
-  ) {
-    result = "You win!";
-    userScore++;
-  } else {
-    result = "Computer wins!";
-    computerScore++;
+document.querySelector(".check").addEventListener("click", function () {
+  const guess = Number(document.querySelector(".guess").value);
+  if (!guess) {
+    displayMessage("No number!");
+  } else if (guess === secretNumber) {
+    document.querySelector("h1").textContent = "Well done!";
+    displayMessage("Correct Number!🎉");
+    document.querySelector(".number").textContent = secretNumber;
+    document.querySelector("body").style.backgroundColor = "#60b347";
+    document.querySelector(".number").style.width = "30rem";
+
+    if (score > highscore) {
+      highscore = score;
+      document.querySelector(".highscore").textContent = highscore;
+    }
+  } else if (guess !== secretNumber) {
+    if (score > 1) {
+      displayMessage(guess > secretNumber ? "Too high!📈" : "Too Low!📉");
+      score--;
+      document.querySelector(".score").textContent = score;
+    } else {
+      displayMessage("You lost the game!");
+      document.querySelector(".score").textContent = 0;
+      document.querySelector("body").style.backgroundColor = "#FF0000";
+      document.querySelector("h1").textContent = "Computer win!";
+    }
   }
+});
 
-  document.getElementById(
-    "result"
-  ).innerText = `You chose ${userChoice}, Computer chose ${computerChoice}. ${result}`;
-  document.getElementById("userScore").innerText = userScore;
-  document.getElementById("computerScore").innerText = computerScore;
-}
-
-document.getElementById("rock").addEventListener("click", () => play("rock"));
-document.getElementById("paper").addEventListener("click", () => play("paper"));
-document
-  .getElementById("scissors")
-  .addEventListener("click", () => play("scissors"));
+document.querySelector(".again").addEventListener("click", function () {
+  score = 20;
+  secretNumber = Math.trunc(Math.random() * 20) + 1;
+  displayMessage("Start guessing...");
+  document.querySelector(".score").textContent = score;
+  document.querySelector(".number").textContent = "?";
+  document.querySelector(".guess").value = "";
+  document.querySelector("body").style.backgroundColor = "#222";
+  document.querySelector(".number").style.width = "15rem";
+});
